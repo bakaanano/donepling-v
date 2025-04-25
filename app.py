@@ -42,15 +42,20 @@ elif option == "Ambil dari Spreadsheet Google Drive":
         if st.button("Mulai Screening"):
             with st.spinner("🔄 Mengunduh dan memproses CV..."):
                 os.makedirs("downloaded_pdfs", exist_ok=True)
-                df_sheet = pd.read_excel(excel_file)
+                df_sheet = pd.read_excel(excel_file, dtype=str)  # Baca semua sebagai string biar aman
 
                 for index, row in df_sheet.iterrows():
-                    name = row[0]
-                    link = row[8]
+                    name = f"CV_{index+1}"  # Nama file default: CV_1, CV_2, dst
+                    link = row[8]  # Ambil dari kolom ke-9 (kolom I)
+
+                    if pd.isna(link):
+                        st.warning(f"⚠️ Tidak ada link pada baris {index+2}")
+                        continue
+
                     file_id = extract_drive_id(link)
 
                     if not file_id:
-                        st.warning(f"❌ Link tidak valid untuk {name}")
+                        st.warning(f"❌ Link tidak valid pada baris {index+2}")
                         continue
 
                     download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
@@ -58,6 +63,7 @@ elif option == "Ambil dari Spreadsheet Google Drive":
 
                     try:
                         r = requests.get(download_url)
+                        r.raise_for_status()  # Biar kalau gagal download langsung error
                         with open(file_path, "wb") as f:
                             f.write(r.content)
 
