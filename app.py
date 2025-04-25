@@ -45,10 +45,10 @@ elif option == "Ambil dari Spreadsheet Google Drive":
                 df_sheet = pd.read_excel(excel_file, dtype=str)  # Baca semua sebagai string biar aman
 
                 for index, row in df_sheet.iterrows():
-                    name = f"CV_{index+1}"  # Nama file default: CV_1, CV_2, dst
-                    link = row[9]  # Ambil dari kolom ke-9 (kolom I)
+                    name = row['NAMA LENGKAP'] if 'NAMA LENGKAP' in row else f"CV_{index+1}"
+                    link = row['SILAHKAN UPLOAD'] if 'SILAHKAN UPLOAD' in row else row[9]
 
-                    if pd.isna(link):
+                    if pd.isna(link) or link.strip() == "":
                         st.warning(f"⚠️ Tidak ada link pada baris {index+2}")
                         continue
 
@@ -59,11 +59,11 @@ elif option == "Ambil dari Spreadsheet Google Drive":
                         continue
 
                     download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
-                    file_path = f"downloaded_pdfs/{name}.pdf"
+                    file_path = f"downloaded_pdfs/{name.replace(' ', '_')}.pdf"
 
                     try:
                         r = requests.get(download_url)
-                        r.raise_for_status()  # Biar kalau gagal download langsung error
+                        r.raise_for_status()  # Biar error kalau gagal download
                         with open(file_path, "wb") as f:
                             f.write(r.content)
 
