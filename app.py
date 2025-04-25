@@ -46,7 +46,7 @@ elif option == "Ambil dari Spreadsheet Google Drive":
 
                 for index, row in df_sheet.iterrows():
                     name = row[0]
-                    link = row[1]
+                    link = row[8]
                     file_id = extract_drive_id(link)
 
                     if not file_id:
