@@ -46,7 +46,7 @@ elif option == "Ambil dari Spreadsheet Google Drive":
 
                 for index, row in df_sheet.iterrows():
                     name = f"CV_{index+1}"  # Nama file default: CV_1, CV_2, dst
-                    link = row[8]  # Ambil dari kolom ke-9 (kolom I)
+                    link = row[9]  # Ambil dari kolom ke-9 (kolom I)
 
                     if pd.isna(link):
                         st.warning(f"⚠️ Tidak ada link pada baris {index+2}")
