@@ -17,8 +17,14 @@ def extract_text_from_pdf(file_path):
 
 # Fungsi ekstrak file ID dari Google Drive link
 def extract_drive_id(link):
-    match = re.search(r"/d/([a-zA-Z0-9_-]+)", link)
+    if "id=" in link:
+        # Link model https://drive.google.com/open?id=xxxx
+        match = re.search(r"id=([a-zA-Z0-9_-]+)", link)
+    else:
+        # Link model https://drive.google.com/file/d/xxxx/view
+        match = re.search(r"/d/([a-zA-Z0-9_-]+)", link)
     return match.group(1) if match else None
+
 
 st.title("🔍 Screening CV Otomatis (PDF dari Spreadsheet + Upload Manual)")
 
